@@ -2,18 +2,24 @@ const express = require('express');
 const cors = require('cors');
 const twilio = require('twilio');
 const admin = require('firebase-admin');
-require('dotenv').config();
 
-// Initialize Firebase Admin
-admin.initializeApp({
-  credential: admin.credential.applicationDefault()
-});
+// Initialize Firebase Admin with Vercel environment
+const serviceAccount = JSON.parse(
+  process.env.FIREBASE_SERVICE_ACCOUNT_KEY || '{}'
+);
+
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: process.env.VITE_FIREBASE_DATABASE_URL
+  });
+}
 
 const app = express();
 
 // Enable CORS for your frontend domain
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173'
+  origin: process.env.VERCEL_URL || 'http://localhost:5173'
 }));
 app.use(express.json());
 
@@ -122,4 +128,7 @@ app.post('/api/notifications/alert', async (req, res) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-}); 
+});
+
+// Export for Vercel serverless function
+module.exports = app; 

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && cp -r public/sounds dist/",
     "lint": "eslint .",
     "preview": "vite preview",
     "firebase:login": "firebase login",
@@ -13,7 +13,8 @@
     "firebase:deploy": "firebase deploy",
     "server": "node server/index.js",
     "dev:all": "concurrently \"npm run dev\" \"npm run server\"",
-    "create-sounds": "node scripts/create-sounds.js"
+    "create-sounds": "node scripts/create-sounds.js",
+    "vercel-build": "npm run build"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
